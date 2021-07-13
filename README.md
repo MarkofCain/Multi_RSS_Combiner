@@ -20,7 +20,7 @@ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Publ
 
 PHP Script to combine all of the rss feeds associated with Destination Linux Network into a single RSS feed.  This is basic procedural PHP
   - Each RSS feed of the DLN Network is read.
-  - Each <item> (podcast details) is stored in a master array.
+  - Each \<item\> (podcast episode details) is stored in a master array.
   - Each <title> of each <item> has the title of the podcast added as some titles don't have the name of the podcast (the lack of uniformity is noted)
   - The master array is sorted by published date of each individual podcast
   - A boiler plate header copied from the Destination Linux Podcast is added to the new RSS feed
