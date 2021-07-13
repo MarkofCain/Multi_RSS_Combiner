@@ -1,6 +1,6 @@
 <?php
 #####   markcain@markcain.com
-####    July 11, 2021 - 0.1.3
+####    July 11, 2021 - 0.1.31
 ###
 ##
 #      __  __                  _           ____           _
@@ -204,7 +204,7 @@ foreach ($all_items as $key => $individual_item) {
 # sort the master list of items by the key (which is the timestamp) in reverse order
 krsort($master_items);
 
-file_put_contents("/home/markcain/public_html/feed/all_podcasts.xml", $new_channel_content, FILE_APPEND);
+file_put_contents("/home/markcain/public_html/feed/all_podcasts.xml", $new_channel_content);
 
 foreach ($master_items as $key => $individual_item) {
     file_put_contents("/home/markcain/public_html/feed/all_podcasts.xml", $individual_item, FILE_APPEND);
