@@ -143,20 +143,6 @@ CONTENT_END;
 ##########
 ###
 ##
-#   Grab the current heading from the Destination Linux podcast and use it as the new heading for the master rss feeds.
-#   The function "file_get_contents" reads the current rss feed from the URL of Destination Linux.
-#   explode separates the file on the word <channel> into two sections
-#   list assigns the content into a scalar varaible rather than an array
-#
-#    list($new_heading) = explode("<channel>", file_get_contents($individual_podcasts['Destination Linux']), 2);
-#
-##
-###
-##########
-
-##########
-###
-##
 #   Cycle through the individual podcast feeds one by one and get the content between the opening and closing item elements i.e. every <item> and </item>
 
 foreach ($individual_podcasts as $podcast_name => $podcast_rss_url) {
@@ -218,7 +204,6 @@ foreach ($all_items as $key => $individual_item) {
 # sort the master list of items by the key (which is the timestamp) in reverse order
 krsort($master_items);
 
-#file_put_contents("/home/markcain/public_html/feed/all_podcasts.xml", $new_heading);
 file_put_contents("/home/markcain/public_html/feed/all_podcasts.xml", $new_channel_content, FILE_APPEND);
 
 foreach ($master_items as $key => $individual_item) {
