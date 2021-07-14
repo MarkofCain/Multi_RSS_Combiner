@@ -48,6 +48,7 @@ $individual_podcasts = [
         "Hardware Addicts" => "https://hardwareaddicts.org/rss",
         "Sudo Show" => "https://sudo.show/rss",
         "Game Sphere" => "https://gamesphere.show/rss",
+        "The Fedora Project" => "https://podcast.fedoraproject.org/rss",
         "DLN Xtend" => "https://dlnxtend.com/rss"
     ];
 #
