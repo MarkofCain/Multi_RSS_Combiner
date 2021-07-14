@@ -29,7 +29,7 @@
 #   -- A custom <channel> header is created for the new RSS feed -- NOTE: the contents of rawvoice needs to be reviewed
 #   -- Each <item> (podcast details) is added by date
 #   -- The footer of the RSS feed is added
-#   -- an xlm file will be generated into the specified folder
+#   -- an xlm file will be generated into the specified "target_folder"
 #   -- add a line to the crontab on the server to run this script on an hourly basis.  Such as:
 #           00 * * * * /usr/local/bin/php /home/markcain/public_html/feed/generate_master_rss.php
 #
@@ -39,19 +39,28 @@
 ##########
 ###
 ##
-#   Put the published title of each podcast and its repective URL into an associative array -- I like human readable variables
-#   Modify this list as needed.  No comma needed on the last element of the associative array
+#   Modify the following three variables to customize the use of this script
 #
-$individual_podcasts = [
-        "Destination Linux" => "https://destinationlinux.org/feed/mp3",
-        "This Week in Linux" => "https://tuxdigital.com/feed/thisweekinlinux-mp3",
-        "Hardware Addicts" => "https://hardwareaddicts.org/rss",
-        "Sudo Show" => "https://sudo.show/rss",
-        "Game Sphere" => "https://gamesphere.show/rss",
-        "The Fedora Project" => "https://podcast.fedoraproject.org/rss",
-        "DLN Xtend" => "https://dlnxtend.com/rss"
-    ];
+#	The list of podcasts to rake.  Modify this list as needed.  Use a human readable name followed by the rss feed of that podcast.  
+#	No comma needed on the last element of the associative array
 #
+	$individual_podcasts = [
+		"Destination Linux" => "https://destinationlinux.org/feed/mp3",
+		"This Week in Linux" => "https://tuxdigital.com/feed/thisweekinlinux-mp3",
+		"Hardware Addicts" => "https://hardwareaddicts.org/rss",
+		"Sudo Show" => "https://sudo.show/rss",
+		"Game Sphere" => "https://gamesphere.show/rss",
+		"The Fedora Project" => "https://podcast.fedoraproject.org/rss",
+		"DLN Xtend" => "https://dlnxtend.com/rss"
+		];
+#
+#	The target folder of where you want surfers to find the new rss feed.
+#
+	$target_folder = "/home/markcain/public_html/feed/";
+#
+#	The target file name of the new rss feed.  The extension is inconsequential and can even be omitted for a clean look like: rss
+#
+	$target_file= "all_podcasts.xml";
 
 # create a variable needed for later in the program
 $all_items = array();  // instantiate the array $all_items
@@ -148,7 +157,7 @@ CONTENT_END;
 
 foreach ($individual_podcasts as $podcast_name => $podcast_rss_url) {
 
-    #  instantiate the array for the items
+    #  instantiate the array for the items.  Needs to be instantiated on each pass as it gets unset at the end of each loop
     $items = array();
 
     #  as each RSS feed is read, split the feed on all occurances of <item> and pack each <item> into an array $items
@@ -205,13 +214,13 @@ foreach ($all_items as $key => $individual_item) {
 # sort the master list of items by the key (which is the timestamp) in reverse order
 krsort($master_items);
 
-file_put_contents("/home/markcain/public_html/feed/all_podcasts.xml", $new_channel_content);
+file_put_contents("$target_folder/$target_file", $new_channel_content);
 
 foreach ($master_items as $key => $individual_item) {
-    file_put_contents("/home/markcain/public_html/feed/all_podcasts.xml", $individual_item, FILE_APPEND);
+    file_put_contents("$target_folder/$target_file", $individual_item, FILE_APPEND);
 };
 
-file_put_contents("/home/markcain/public_html/feed/all_podcasts.xml", "\n</channel>\n</rss>\n\n ", FILE_APPEND);
+file_put_contents("$target_folder/$target_file", "\n</channel>\n</rss>\n\n ", FILE_APPEND);
 
 print "Done."
 ?>
