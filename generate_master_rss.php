@@ -60,7 +60,7 @@
 #
 #	The target folder of where you want surfers to find the new rss feed.
 #
-		$target_folder = "feed/";  // use "" if you want it in the root of the domain
+		$target_folder = "feed/";  // use "" if you want it in the root of the domain; otherwise be sure to use a trailing slash /
 #
 #	The target file name of the new rss feed.  The extension is inconsequential and can even be omitted for a clean look like: rss
 #
@@ -99,7 +99,7 @@ $new_channel_content = <<< CONTENT_END
 	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
 >
 <channel>
-	<title>Destination Linux Network Podcasts</title>
+	<title>Destination Linux Network: All Shows</title>
 	<atom:link href="$target_domain$target_folder$target_file" rel="self" type="application/rss+xml" />
 	<link>$target_domain</link>
 	<description>Destination Linux Network is a collection of podcasts made by people who love running Linux and want to help others do the same.</description>
@@ -108,18 +108,18 @@ $new_channel_content = <<< CONTENT_END
 	<sy:updatePeriod>hourly</sy:updatePeriod>
 	<sy:updateFrequency>1</sy:updateFrequency>
 	<itunes:summary>Destination Linux Network is a collection of podcasts creators who share their passion for Linux &amp; Open Source. Website: https://destinationlinux.org | Network: https://destinationlinux.network</itunes:summary>
-	<itunes:author>Destination Linux Network</itunes:author>
+	<itunes:author>Destination Linux Network: All Shows</itunes:author>
 	<itunes:explicit>clean</itunes:explicit>
 	<itunes:image href="https://destinationlinux.org/wp-content/uploads/2021/06/dln-podcast-art-destination-linux-scaled.jpg" />
 	<itunes:type>episodic</itunes:type>
 	<itunes:owner>
-		<itunes:name>Destination Linux Network</itunes:name>
+		<itunes:name>Destination Linux Network: All Shows</itunes:name>
 		<itunes:email>comments@destinationlinux.network</itunes:email>
 	</itunes:owner>
-	<managingEditor>comments@destinationlinux.network (Destination Linux Network)</managingEditor>
+	<managingEditor>comments@destinationlinux.network (Destination Linux Network: All Shows)</managingEditor>
 	<itunes:subtitle>A collection of conversational podcasts by people who love running Linux.</itunes:subtitle>
 	<image>
-		<title>Destination Linux Network</title>
+		<title>Destination Linux Network: All Shows</title>
 		<url>https://destinationlinux.org/wp-content/uploads/2021/06/dln-podcast-art-destination-linux-scaled.jpg</url>
 		<link>$target_domain</link>
 	</image>
