@@ -41,7 +41,7 @@
 ##
 #   Modify the following three variables to customize the use of this script
 #
-#	The list of podcasts to rake.  Modify this list as needed.  Use a human readable name followed by the rss feed of that podcast.  
+#	The list of podcasts to rake.  Modify this list as needed.  Use a human readable name followed by the rss feed of that podcast.
 #	No comma needed on the last element of the associative array
 #
 	$individual_podcasts = [
@@ -54,13 +54,22 @@
 		"DLN Xtend" => "https://dlnxtend.com/rss"
 		];
 #
+#	The web root folder
+#
+		$web_root_path = "/home/markcain/public_html/";
+#
 #	The target folder of where you want surfers to find the new rss feed.
 #
-	$target_folder = "/home/markcain/public_html/feed/";
+		$target_folder = "feed/";  // use "" if you want it in the root of the domain
 #
 #	The target file name of the new rss feed.  The extension is inconsequential and can even be omitted for a clean look like: rss
 #
-	$target_file= "all_podcasts.xml";
+		$target_file= "all_podcasts.xml";
+
+#
+#	The target domain of the new rss feed.
+#
+		$target_domain= "https://MarkCain.com/";
 
 # create a variable needed for later in the program
 $all_items = array();  // instantiate the array $all_items
@@ -91,21 +100,13 @@ $new_channel_content = <<< CONTENT_END
 >
 <channel>
 	<title>Destination Linux Network Podcasts</title>
-	<atom:link href="https://destinationlinux.org/feed/all_podcasts.xml" rel="self" type="application/rss+xml" />
-	<link>https://destinationlinux.org</link>
+	<atom:link href="$target_domain$target_folder$target_file" rel="self" type="application/rss+xml" />
+	<link>$target_domain</link>
 	<description>Destination Linux Network is a collection of podcasts made by people who love running Linux and want to help others do the same.</description>
 	<lastBuildDate>place_holder</lastBuildDate>
 	<language>en-US</language>
 	<sy:updatePeriod>hourly</sy:updatePeriod>
 	<sy:updateFrequency>1</sy:updateFrequency>
-	<image>
-        <url>https://destinationlinux.org/wp-content/uploads/2020/09/cropped-destination-linux-favicon-32x32.png</url>
-        <title>Destination Linux</title>
-        <link>https://destinationlinux.org</link>
-        <width>32</width>
-        <height>32</height>
-    </image>
-
 	<itunes:summary>Destination Linux Network is a collection of podcasts creators who share their passion for Linux &amp; Open Source. Website: https://destinationlinux.org | Network: https://destinationlinux.network</itunes:summary>
 	<itunes:author>Destination Linux Network</itunes:author>
 	<itunes:explicit>clean</itunes:explicit>
@@ -113,14 +114,14 @@ $new_channel_content = <<< CONTENT_END
 	<itunes:type>episodic</itunes:type>
 	<itunes:owner>
 		<itunes:name>Destination Linux Network</itunes:name>
-		<itunes:email>comments@destinationlinux.org</itunes:email>
+		<itunes:email>comments@destinationlinux.network</itunes:email>
 	</itunes:owner>
-	<managingEditor>comments@destinationlinux.org (Destination Linux Network)</managingEditor>
-	<itunes:subtitle>A conversational podcast by people who love running Linux.</itunes:subtitle>
+	<managingEditor>comments@destinationlinux.network (Destination Linux Network)</managingEditor>
+	<itunes:subtitle>A collection of conversational podcasts by people who love running Linux.</itunes:subtitle>
 	<image>
-		<title>Destination Linux</title>
+		<title>Destination Linux Network</title>
 		<url>https://destinationlinux.org/wp-content/uploads/2021/06/dln-podcast-art-destination-linux-scaled.jpg</url>
-		<link>https://destinationlinux.org</link>
+		<link>$target_domain</link>
 	</image>
 	<itunes:category text="Technology" />
 	<googleplay:category text="Technology"/>
@@ -130,7 +131,6 @@ $new_channel_content = <<< CONTENT_END
 	<itunes:category text="Education" />
 	<rawvoice:donate href="https://destinationlinux.org/patreon">Become a Patron</rawvoice:donate>
 	<podcast:funding url="https://destinationlinux.org/patreon">Become a Patron</podcast:funding>
-	<rawvoice:subscribe feed="https://destinationlinux.org/feed/all_podcasts" itunes="https://podcasts.apple.com/us/podcast/destination-linux/id1192543917" blubrry="https://blubrry.com/destinationlinux/" stitcher="https://www.stitcher.com/show/destination-linux" tunein="https://tunein.com/podcasts/Technology-Podcasts/Destination-Linux-p1156321/" spotify="https://open.spotify.com/show/0j1XLigWiYAUVtwzsQMz8l" amazon="https://music.amazon.com/podcasts/0dc3f02c-5b96-4b93-99fb-0f4fc15aabb3/Destination-Linux" pcindex="https://podcastindex.org/podcast/54545" iheart="https://www.iheart.com/podcast/269-destination-linux-62567534/" podchaser="https://www.podchaser.com/podcasts/destination-linux-507417"></rawvoice:subscribe>
 
 CONTENT_END;
 #
@@ -211,16 +211,16 @@ foreach ($all_items as $key => $individual_item) {
 ##
 #   Put all of these modified elements together to create the new master rss feed
 #
-# sort the master list of items by the key (which is the timestamp) in reverse order
-krsort($master_items);
+	# sort the master list of items by the key (which is the timestamp) in reverse order
+		krsort($master_items);
 
-file_put_contents("$target_folder/$target_file", $new_channel_content);
+	# write out the top of the rss feeds
+		file_put_contents("$web_root_path$target_folder$target_file", $new_channel_content);
 
-foreach ($master_items as $key => $individual_item) {
-    file_put_contents("$target_folder/$target_file", $individual_item, FILE_APPEND);
-};
+	# write out the <item>s for each of the episodes"$web_root_path$target_folder$target_file"
+	 	foreach ($master_items as $key => $individual_item) {
+			file_put_contents("$web_root_path$target_folder$target_file", $individual_item, FILE_APPEND);
+		};
 
-file_put_contents("$target_folder/$target_file", "\n</channel>\n</rss>\n\n ", FILE_APPEND);
-
-print "Done."
-?>
+	# write out the closing tags of the rss feeds
+		file_put_contents("$web_root_path$target_folder$target_file", "\n</channel>\n</rss>\n\n ", FILE_APPEND);
