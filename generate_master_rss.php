@@ -1,6 +1,6 @@
 <?php
 #####   markcain@markcain.com
-####    July 11, 2021 - 0.1.33
+####    July 11, 2021 - 0.1.40
 ###
 ##
 #      __  __                  _           ____           _
@@ -64,7 +64,7 @@
 #
 #	The target file name of the new rss feed.  The extension is inconsequential and can even be omitted for a clean look like: rss
 #
-		$target_file= "all_podcasts.xml";
+		$target_file= "2.xml";
 
 #
 #	The target domain of the new rss feed.
@@ -82,22 +82,6 @@ $all_items = array();  // instantiate the array $all_items
 #   Utilize the heredoc method of assignment to allow easy spacing, quotes, new lines, etc
 #
 $new_channel_content = <<< CONTENT_END
-<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" encoding="UTF-8"
-    xmlns:admin="http://webns.net/mvcb/"
-    xmlns:atom="http://www.w3.org/2005/Atom/"
-    xmlns:content="http://purl.org/rss/1.0/modules/content/"
-    xmlns:dc="http://purl.org/dc/elements/1.1/"
-    xmlns:fireside="http://fireside.fm/modules/rss/fireside"
-    xmlns:googleplay="http://www.google.com/schemas/play-podcasts/1.0"
-    xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd"
-    xmlns:podcast="https://github.com/Podcastindex-org/podcast-namespace/blob/main/docs/1.0.md"
-    xmlns:rawvoice="http://www.rawvoice.com/rawvoiceRssModule/"
-    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
-    xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
-	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
->
 <channel>
 	<title>Destination Linux Network: All Shows</title>
 	<atom:link href="$target_domain$target_folder$target_file" rel="self" type="application/rss+xml" />
@@ -166,6 +150,21 @@ foreach ($individual_podcasts as $podcast_name => $podcast_rss_url) {
     #  The first element of the array $items unforunately contains all of the data that comes before the first <item>; Therefore, delete it via array_shift.
     $garbage = array_shift($items);  // The garbage is now removed from the array $items
 
+	# The $garbage variable above contains the xml namespaces used for each of the podcasts.  Pluck the xml namespaces out of the garbage
+	# and pack them into the array $name_spaces so that all the xml names spaces are reused.  This will future proof the script.
+
+		# look for the occurance of "xmlns:" followed by data and ending with a double quote in the variable $garbage and store them in the array $matches
+			preg_match_all("/xmlns:.*=.*\"/i", $garbage, $matches);
+
+			# $matches is actaully an array of arrays; so we need to loop through the array twice to get to the values that contain the xml name spaces
+			foreach ($matches as $k1 => $v1){
+		 		foreach ($v1 as $k2 => $v2){
+					# use the data of the name space as both the key and the value in the $name_spaces array.  This will ensure that duplicate xmlns'
+					# are overwritten and hence will occur only one in the array
+		        	$name_spaces[$v2] = $v2;
+		    	};
+		 	};
+
     # Since the rss feed was "exploded" on the string "<item>" the literal string "<item>" needs to be added back into each element of the array
     # To ensure that the published title of each podcast is also included it the title, add the podcast name to the <tile> element
     $items = preg_replace("/<title>/", "<item>\n<title>$podcast_name: ", $items);
@@ -214,8 +213,25 @@ foreach ($all_items as $key => $individual_item) {
 	# sort the master list of items by the key (which is the timestamp) in reverse order
 		krsort($master_items);
 
+	# sort the list of xml names spaces to make it pretty
+		ksort($master_items);
+
+	# write out the top of the rss feed
+		file_put_contents("$web_root_path$target_folder$target_file", "<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+
 	# write out the top of the rss feeds
-		file_put_contents("$web_root_path$target_folder$target_file", $new_channel_content);
+		file_put_contents("$web_root_path$target_folder$target_file", $new_channel_content, FILE_APPEND);
+
+	# write out the beginning of the rss specifications for the name spaces
+		file_put_contents("$web_root_path$target_folder$target_file", "\n<rss version=\"2.0\" encoding=\"UTF-8\"\n", FILE_APPEND);
+
+	# write out the individual name space specifications
+	 	foreach ($name_spaces as $key => $individual_xmlns) {
+			file_put_contents("$web_root_path$target_folder$target_file", $individual_xmlns . "\n", FILE_APPEND);
+		};
+
+	# write out the end of the rss specifications for the name spaces
+		file_put_contents("$web_root_path$target_folder$target_file", "\n>\n", FILE_APPEND);
 
 	# write out the <item>s for each of the episodes"$web_root_path$target_folder$target_file"
 	 	foreach ($master_items as $key => $individual_item) {
