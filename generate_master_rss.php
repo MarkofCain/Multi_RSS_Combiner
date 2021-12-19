@@ -51,7 +51,8 @@
 		"Sudo Show" => "https://sudo.show/rss",
 		"Game Sphere" => "https://gamesphere.show/rss",
 		"The Fedora Project" => "https://podcast.fedoraproject.org/rss",
-		"DLN Xtend" => "https://dlnxtend.com/rss"
+		"DLN Xtend" => "https://dlnxtend.com/rss",
+		"Ask Noah Show" => "https://podcast.asknoahshow.com/rss"
 		];
 #
 #	The web root folder
