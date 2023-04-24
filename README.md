@@ -1,6 +1,6 @@
 # Multi_RSS_Combiner
 markcain@markcain.com
-July 11, 2021 - 0.1.41
+April 24, 2023 - 0.1.42
 
 
       __  __                  _           ____           _

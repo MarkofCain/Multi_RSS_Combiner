@@ -1,6 +1,6 @@
 <?php
 #####   markcain@markcain.com
-####    July 11, 2021 - 0.1.41
+####    April 24, 2023 - 0.1.42
 ###
 ##
 #      __  __                  _           ____           _
@@ -43,15 +43,19 @@
 #
 #	The list of podcasts to rake.  Modify this list as needed.  Use a human readable name followed by the rss feed of that podcast.
 #	No comma needed on the last element of the associative array
+# "Hardware Addicts" => "https://hardwareaddicts.org/rss",
+# "Sudo Show" => "https://sudo.show/rss",
+# "Game Sphere" => "https://gamesphere.show/rss",
+# 
 #
 	$individual_podcasts = [
 		"Destination Linux" => "https://destinationlinux.org/feed/mp3",
 		"This Week in Linux" => "https://tuxdigital.com/feed/thisweekinlinux-mp3",
-		"Hardware Addicts" => "https://hardwareaddicts.org/rss",
-		"Sudo Show" => "https://sudo.show/rss",
-		"Game Sphere" => "https://gamesphere.show/rss",
-		"The Fedora Project" => "https://podcast.fedoraproject.org/rss",
-		"DLN Xtend" => "https://dlnxtend.com/rss"
+		"Hardware Addicts" => "https://feeds.fireside.fm/hardwareaddicts/rss",
+		"Sudo Show" => "https://feeds.fireside.fm/sudoshow/rss",
+		"Game Sphere" => "https://feeds.fireside.fm/gamesphere/rss",
+		"The Fedora Project" => "https://feeds.fireside.fm/fedoraproject/rss",
+		"Linux Out Loud" => "https://feeds.fireside.fm/dlnxtend/rss"
 		];
 #
 #	The web root folder
@@ -60,7 +64,7 @@
 #
 #	The target folder of where you want surfers to find the new rss feed.
 #
-		$target_folder = "feed/";  // use "" if you want it in the root of the domain; otherwise be sure to use a trailing slash /
+		$target_folder = "dln_feed/";  // use "" if you want it in the root of the domain; otherwise be sure to use a trailing slash /
 #
 #	The target file name of the new rss feed.  The extension is inconsequential and can even be omitted for a clean look like: rss
 #
@@ -137,6 +141,40 @@ CONTENT_END;
 ##########
 ###
 ##
+#  Create a curl session function to replace the problematic php file_get_contents function
+    
+function curl_file_get_contents($passed_url) {
+    
+    # initialize a new curl handle
+    $ch = curl_init(); 
+
+    ## set some options:
+    
+        # setting RETURNTRANSFER to 1 tells curl we want a return string and not a display
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);  // tells curl we want a return string and not a display
+    
+        # tells curl the target url
+        curl_setopt($ch, CURLOPT_URL, $passed_url); 
+	
+    # execute the curl session.  $contents will be the file if successful; otherwise false on failure
+    $contents = curl_exec($ch);
+
+    # close the curl session
+    curl_close($c);
+    
+    # return the contents
+    return $contents;
+};
+
+#
+##
+###
+##########
+ 
+ 
+##########
+###
+##
 #   Cycle through the individual podcast feeds one by one and get the content between the opening and closing item elements i.e. every <item> and </item>
 
 foreach ($individual_podcasts as $podcast_name => $podcast_rss_url) {
@@ -145,7 +183,7 @@ foreach ($individual_podcasts as $podcast_name => $podcast_rss_url) {
     $items = array();
 
     #  as each RSS feed is read, split the feed on all occurances of <item> and pack each <item> into an array $items
-    $items = explode("<item>", file_get_contents($podcast_rss_url));
+    $items = explode("<item>", curl_file_get_contents($podcast_rss_url));
 
     #  The first element of the array $items unforunately contains all of the data that comes before the first <item>; Therefore, delete it via array_shift.
     $garbage = array_shift($items);  // The garbage is now removed from the array $items
