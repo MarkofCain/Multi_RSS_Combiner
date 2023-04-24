@@ -39,7 +39,7 @@
 ##########
 ###
 ##
-#   Modify the following three variables to customize the use of this script
+#   Modify the following five variables to customize the use of this script
 #
 #	The list of podcasts to rake.  Modify this list as needed.  Use a human readable name followed by the rss feed of that podcast.
 #	No comma needed on the last element of the associative array
