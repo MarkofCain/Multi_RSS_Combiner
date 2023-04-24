@@ -1,6 +1,6 @@
 <?php
 #####   markcain@markcain.com
-####    April 24, 2023 - 0.1.42
+####    April 24, 2023 - 0.1.43
 ###
 ##
 #      __  __                  _           ____           _
@@ -160,7 +160,7 @@ function curl_file_get_contents($passed_url) {
     $contents = curl_exec($ch);
 
     # close the curl session
-    curl_close($c);
+    curl_close($ch);
     
     # return the contents
     return $contents;
